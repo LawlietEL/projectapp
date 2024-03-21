@@ -25,3 +25,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/change-password', [AuthController::class, 'change_password']);
     Route::post('/search-user', [AuthController::class, 'search']);
 });
+
+Route::resource('roles', RolesController::class);
+Route::post('/store', [RolesController::class, 'store'])->name('store');
