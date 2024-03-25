@@ -14,7 +14,22 @@ class SettingRolesController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $data = SettingRoles::all();
+            $response = [
+                'success' => true,
+                'data' => $data,
+                'message' => 'Data tersedia',
+            ];
+
+            return response()->json($response, 200);
+        } catch (Exception $th) {
+            $response = [
+                'success' => false,
+                'message' => $th,
+            ];
+            return response()->json($response, 500);
+        }
     }
 
     /**
@@ -44,7 +59,7 @@ class SettingRolesController extends Controller
             $response = [
                 'success' => true,
                 'data' => $data,
-                'message' => 'Data berhasil di simpan',
+                'message' => 'Data berhasil disimpan',
             ];
             
             //jika berhasil maka akan mengirimkan status code 200
@@ -52,7 +67,7 @@ class SettingRolesController extends Controller
         } catch (Exception $th) {
             $response = [
                 'success' => false,
-                'message' => $th,
+                'message' => 'Gagal Menyimpan Data',
             ];
             //jika error maka akan mengirimkan status code 500
             return response()->json($response, 500);
@@ -62,24 +77,94 @@ class SettingRolesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(SettingRoles $settingRoles)
+    public function show($id)
     {
-        //
+        try {
+            $data = SettingRoles::find($id);
+            if ($data == null){
+                $response = [
+                    'success' => false,
+                    'message' => 'ID Tidak Ditemukan',
+                ];
+                return response()->json($response, 500);
+            }
+            $response = [
+                'success' => true,
+                'data' => $data,
+                'message' => 'Selamat Datang, Admin',
+            ];
+
+            return response()->json($response, 200);
+        } catch (Exception $th) {
+            $response = [
+                'success' => false,
+                'message' => 'ID Tidak Ditemukan',
+            ];
+            return response()->json($response, 500);
+        }
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, SettingRoles $settingRoles)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $validator = Validator::make($request->all(), [
+                'users_id' => 'required',
+                'roles_id' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors());
+            }
+
+            $data = SettingRoles::find($id);
+            $data->users_id = $request->users_id;
+            $data->roles_id = $request->roles_id;
+            $data->save();
+
+            $response = [
+                'success' => true,
+                'data' => $data,
+                'message' => 'ID Role berhasil diubah',
+            ];
+
+            return response()->json($response, 200);
+        } catch (Exception $th) {
+            $response = [
+                'success' => false,
+                'message' => $th,
+            ];
+            return response()->json($response, 500);
+        }
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(SettingRoles $settingRoles)
+    public function destroy($id)
     {
-        //
+        try {
+            $save = SettingRoles::find($id);
+            if ($save == null) {
+                return response()->json(['success' => false, 'message' => 'Periksa kembali data yang akan di hapus'], 404);
+            }
+            $save->delete();
+            $response = [
+                'success' => true,
+                'message' => 'ID Role berhasil dihapus',
+            ];
+            return response()->json($response, 200);
+        } catch (Exception $th) {
+            $response = [
+                'success' => false,
+                'message' => $th,
+            ];
+            return response()->json($response, 500);
+        }
+
     }
 }
