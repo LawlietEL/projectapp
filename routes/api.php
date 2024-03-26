@@ -6,6 +6,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\RolesController;
 use App\Http\Controllers\API\SettingRolesController;
 use App\Http\Controllers\API\ProfilPerusahaanController;
+use App\Http\Controllers\API\AbsenController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -30,4 +31,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::resource('roles', RolesController::class);
     Route::resource('settings_roles', SettingRolesController::class);
     Route::resource('profil_perusahaan', ProfilPerusahaanController::class);
+    Route::resource('absen', AbsenController::class);
 });
