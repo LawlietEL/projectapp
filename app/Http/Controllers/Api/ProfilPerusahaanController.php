@@ -158,8 +158,26 @@ class ProfilPerusahaanController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ProfilPerusahaan $profilPerusahaan)
+    public function destroy($id)
     {
-        //
+        try {
+            $save = ProfilPerusahaan::find($id);
+            if ($save == null) {
+                return response()->json(['success' => false, 'message' => 'Periksa kembali data yang akan di hapus'], 404);
+            }
+            $save->delete();
+            $response = [
+                'success' => true,
+                'message' => 'ID Perusahaan berhasil dihapus',
+            ];
+            return response()->json($response, 200);
+        } catch (Exception $th) {
+            $response = [
+                'success' => false,
+                'message' => $th,
+            ];
+            return response()->json($response, 500);
+        }
+
     }
 }
