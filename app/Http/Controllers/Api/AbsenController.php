@@ -38,19 +38,13 @@ class AbsenController extends Controller
     public function store(Request $request)
     {
         try {
-            //cek apakah request berisi nama_role atau tidak
             $validator = Validator::make($request->all(), [
                 'users_id' => 'required',
                 'lokasi_user' => 'required',
                 'waktu_absen_masuk' => 'required',
                 'tanggal_hari_ini' => 'required',
-            ]);
-            
-            //kalau tidak akan mengembalikan error
-            if ($validator->fails()) {
-                return response()->json($validator->errors());
-            }
-            
+            ]);           
+                        
             //kalau ya maka akan membuat roles baru
             $data = Absen::create([
                 'users_id' => $request->users_id,
@@ -58,15 +52,24 @@ class AbsenController extends Controller
                 'waktu_absen_masuk' => $request->waktu_absen_masuk,
                 'waktu_absen_pulang' => $request->waktu_absen_pulang,
                 'tanggal_hari_ini' => $request->tanggal_hari_ini,
-            ]);
-            
+            ]);                     
+                        
             //data akan di kirimkan dalam bentuk response list
             $response = [
                 'success' => true,
                 'data' => $data,
                 'message' => 'Absen Masuk Berhasil',
-            ];
-            
+            ]; 
+
+            // $data = Absen::find($id);
+            // if ($data['waktu_absen_masuk']!= null){                
+            //     $response = [
+            //         'success' => false,
+            //         'message' => 'Anda Sudah Absen Masuk',
+            //     ];
+            //     return response()->json($response, 500);
+            // }
+            // $data->delete();
             //jika berhasil maka akan mengirimkan status code 200
             return response()->json($response, 200);
         } catch (Exception $th) {
@@ -76,7 +79,7 @@ class AbsenController extends Controller
             ];
             //jika error maka akan mengirimkan status code 500
             return response()->json($response, 500);
-        }
+        }              
     }
 
     /**
@@ -116,7 +119,7 @@ class AbsenController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $validator = Validator::make($request->all(), [                
+            $validator = Validator::make($request->all(), [                              
                 'tanggal_hari_ini' => 'required',
                 'waktu_absen_pulang' => 'required',
                             ]);
@@ -125,15 +128,27 @@ class AbsenController extends Controller
                 return response()->json($validator->errors());
             }
 
-            $data = Absen::find($id);
             //cek apakah tanggal dari $data = database itu sama dengan tanggal yang dikirimkan oleh user
+            $data = Absen::find($id);
             if ($data['tanggal_hari_ini']!= $request -> tanggal_hari_ini){
                 $response = [
                     'success' => false,
-                    'message' => 'Tanggal Pulang Tidak Sesuai Dengan Tanggal Masuk',
+                    'message' => 'Tanggal Absen Pulang Tidak Sesuai Dengan Tanggal Absen Masuk',
                 ];
                 return response()->json($response, 500);
             }
+
+            //cek apakah user sudah absen pulang atau belum, jikas sudah maka muncul notif di bawah
+            $data = Absen::find($id);
+            if ($data['waktu_absen_pulang'] != null){
+                $response = [
+                    'success' => false,
+                    'message' => 'Absen Pulang Sudah Dilakukan',
+                ];
+                return response()->json($response, 500);
+            }
+
+
             $data->waktu_absen_pulang = $request->waktu_absen_pulang;            
             $data->save();
 
