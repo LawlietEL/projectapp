@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('waktu_absen_masuk', length: 100);
             $table->string('waktu_absen_pulang', length: 100)->nullable();
             $table->string('tanggal_hari_ini', length: 100);
+            $table->string('status', length: 100);
             $table->timestamps();
         });
     }

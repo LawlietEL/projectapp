@@ -45,6 +45,7 @@ class ProfilPerusahaanController extends Controller
                 'lokasi' => 'required',
                 'jam_masuk' => 'required',
                 'jam_pulang' => 'required',
+                
             ]);
             
             //kalau tidak akan mengembalikan error
