@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('setting_roles', function (Blueprint $table) {
             $table->id();
+            //tambahkan baris users_id dan roles_id
             $table->foreignId('users_id');
             $table->foreignId('roles_id');
             $table->timestamps();

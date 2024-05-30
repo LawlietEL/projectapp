@@ -13,9 +13,9 @@ class ProfilPerusahaan extends Model
     protected $fillable = [
         'nama_perusahaan',
         'deskripsi',
-        'lokasi',
+        'latitude',
+        'longitude',
         'jam_masuk',
         'jam_pulang',
-        'image',
     ];
 }

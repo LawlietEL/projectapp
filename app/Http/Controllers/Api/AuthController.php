@@ -50,6 +50,25 @@ class AuthController extends Controller
             ->json(['success' => true, 'message' => 'Hi ' . $user->name . ', welcome to Siakad Politeknik Takumi', 'access_token' => $token, 'email' => $user->email]);
     }
 
+    public function user(Request $request)
+    {
+        try {
+            $data = $request->user();
+            $response = [
+                'success' => true,
+                'data' => $data,
+                'message' => 'Data tersedia',
+            ];
+            return response()->json($response, 200);
+        } catch (Exception $th) {
+            $response = [
+                'success' => false,
+                'message' => $th,
+            ];
+            return response()->json($response, 500);
+        }
+    }
+
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
