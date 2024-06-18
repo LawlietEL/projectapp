@@ -29,6 +29,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/change-password', [AuthController::class, 'change_password']);
     Route::post('/search-user', [AuthController::class, 'search']);
+    Route::resource('profil_perusahaan', ProfilPerusahaanController::class);
 });
     
     //yang sudah login
@@ -36,15 +37,15 @@ Route::middleware(['auth:sanctum', 'Admin'])->prefix('admin')->group(function ()
     Route::post('/search-user', [AuthController::class, 'search']);
     Route::resource('roles', RolesController::class);
     Route::resource('setting_roles', SettingRolesController::class);
-    Route::resource('profil_perusahaan', ProfilPerusahaanController::class);
+
     Route::resource('absen', AbsenController::class);
 });
 
 Route::middleware(['auth:sanctum', 'Pegawai'])->prefix('pegawai')->group(function () {
-    Route::get('/profil_perusahaan/{id}', [ProfilPerusahaanController::class, 'show']);
+    // Route::get('/profil_perusahaan/{id}', [ProfilPerusahaanController::class, 'show']);
     // Route::post('/search-user', [AuthController::class, 'search']);
     // Route::resource('roles', RolesController::class);
     // Route::resource('setting_roles', SettingRolesController::class);
-    // Route::resource('profil_perusahaan', ProfilPerusahaanController::class);
+    // // Route::resource('profil_perusahaan', ProfilPerusahaanController::class);
     // Route::resource('absen', AbsenController::class);
 });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\SettingRoles;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -36,19 +37,27 @@ class AuthController extends Controller
     }
 
     public function login(Request $request)
-    {
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()
-                ->json(['success' => false, 'message' => 'Unauthorized'], 401);
-        }
-        // $request->session()->regenerate();
-        $user = User::where('email', $request['email'])->firstOrFail();
-        // $request->user()->tokens()->delete();
-        $token = $user->createToken('auth_token')->plainTextToken;
-
+{
+    if (!Auth::attempt($request->only('email', 'password'))) {
         return response()
-            ->json(['success' => true, 'message' => 'Hi ' . $user->name . ', welcome to Siakad Politeknik Takumi', 'access_token' => $token, 'email' => $user->email]);
+            ->json(['success' => false, 'message' => 'Unauthorized'], 401);
     }
+
+    // $request->session()->regenerate();
+    $user = User::where('email', $request['email'])->firstOrFail();
+    $roles = SettingRoles::where('users_id', $user->id)->get();
+    if ($roles == null) {
+        auth()->user()->tokens()->delete();
+        return response()
+            ->json(['success' => false, 'message' => 'You are not allowed, please contact admin!'], 401);
+    }
+
+    // $request->user()->tokens()->delete();
+    $token = $user->createToken('auth_token')->plainTextToken;
+    return response()
+        ->json(['success' => true, 'message' => 'Hi ' . $user->name . ', welcome to Siakad Politeknik Takumi', 'access_token' => $token, 'users_id' => $user->id]);
+}
+
 
     public function user(Request $request)
     {
